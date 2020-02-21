@@ -10,8 +10,6 @@ import (
 var Env *config.Environment
 
 func init() {
-
-
 	Env = &config.Environment{
 		ErrorLogger: log.New(os.Stderr, "ERROR | ", log.Lshortfile|log.Ltime),
 		InfoLogger:  log.New(os.Stdout, "INFO  | ", log.Lshortfile|log.Ltime),
