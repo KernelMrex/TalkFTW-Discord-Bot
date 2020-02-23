@@ -31,29 +31,29 @@ func init() {
 }
 
 func main() {
-
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Env.Config.BotConfig.Secret)
 	if err != nil {
 		Env.ErrorLogger.Fatalln("[ main ]", "error creating Discord session,", err)
 	}
 
-	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
+	// Register the playUserSoundHandler func as a callback for MessageCreate events.
+	dg.AddHandler(playUserSoundHandler)
+	dg.AddHandler(loadCustomMusicHandler)
 
 	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
-	if err != nil {
+	if err := dg.Open(); err != nil {
 		Env.ErrorLogger.Fatalln("[ main ]", "error opening connection,", err)
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
-	Env.InfoLogger.Println("[ main ]", "Bot is now running.  Press CTRL-C to exit.")
+	Env.InfoLogger.Println("[ main ]", "Bot is now running. Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
 	// Cleanly close down the Discord session.
-	dg.Close()
+	if err := dg.Close(); err != nil {
+		Env.ErrorLogger.Fatalln("[ main ]", "error closing:", err)
+	}
 }
-
