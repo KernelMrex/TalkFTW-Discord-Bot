@@ -33,7 +33,7 @@ func init() {
 	}
 
 	// Tmp
-	Announcement, err = music_lib.LoadMusicFile("airhorn.dca")
+	Announcement, err = music_lib.LoadMusicFile("audio.dca")
 	if err != nil {
 		errorLogger.Fatalln("[ init ]", err)
 	}
