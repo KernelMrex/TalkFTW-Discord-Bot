@@ -2,6 +2,7 @@ package main
 
 import (
 	"TalkFTWDiscordBot/config"
+	"TalkFTWDiscordBot/music_lib"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -10,6 +11,8 @@ import (
 )
 
 var Env *config.Environment
+
+var Announcement [][]byte
 
 func init() {
 	// Loggers
@@ -27,6 +30,12 @@ func init() {
 		ErrorLogger: errorLogger,
 		InfoLogger:  infoLogger,
 		Config:      cfg,
+	}
+
+	// Tmp
+	Announcement, err = music_lib.LoadMusicFile("airhorn.dca")
+	if err != nil {
+		errorLogger.Fatalln("[ init ]", err)
 	}
 }
 
