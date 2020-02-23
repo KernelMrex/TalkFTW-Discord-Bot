@@ -23,7 +23,7 @@ func playUserSoundHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// Find the guild for that channel.
+	// Find the guild(server) for that channel.
 	g, err := s.State.Guild(c.GuildID)
 	if err != nil {
 		Env.ErrorLogger.Println("[ playUserSoundHandler ]", "cannot determine guild")
@@ -41,7 +41,6 @@ func playUserSoundHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 			// TODO: play sound
-
 			return
 		}
 	}
@@ -53,4 +52,30 @@ func playUserSoundHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-func loadCustomMusicHandler(s *discordgo.Session, m *discordgo.MessageCreate) {}
+func voiceStateUpdateHandler(s *discordgo.Session, u *discordgo.VoiceStateUpdate) {
+	// Find channel
+	c, err := s.State.Channel(u.ChannelID)
+	if err != nil {
+		Env.ErrorLogger.Println("[ playUserSoundHandler ]", "cannot determine user channel")
+		return
+	}
+
+	// Find the guild for that channel.
+	g, err := s.State.Guild(c.GuildID)
+	if err != nil {
+		Env.ErrorLogger.Println("[ playUserSoundHandler ]", "cannot determine guild")
+		return
+	}
+
+	// Example: sending message when user connected to a voice channel
+	for _, ch := range g.Channels {
+		if ch.Type == discordgo.ChannelTypeGuildText {
+			message := fmt.Sprintf("User %s connected voice channel %s", u.UserID, u.ChannelID)
+			if _, err := s.ChannelMessageSend(ch.ID, message); err != nil {
+				Env.ErrorLogger.Println("[ voiceStateUpdateHandler ]", err)
+				return
+			}
+			break
+		}
+	}
+}

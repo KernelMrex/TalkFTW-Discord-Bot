@@ -39,7 +39,7 @@ func main() {
 
 	// Register the playUserSoundHandler func as a callback for MessageCreate events.
 	dg.AddHandler(playUserSoundHandler)
-	dg.AddHandler(loadCustomMusicHandler)
+	dg.AddHandler(voiceStateUpdateHandler)
 
 	// Open a websocket connection to Discord and begin listening.
 	if err := dg.Open(); err != nil {
