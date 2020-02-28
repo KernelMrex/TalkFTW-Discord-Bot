@@ -3,6 +3,7 @@ package main
 import (
 	"TalkFTWDiscordBot/config"
 	"TalkFTWDiscordBot/music_lib"
+	"TalkFTWDiscordBot/voice"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -27,13 +28,14 @@ func init() {
 
 	// Env
 	Env = &config.Environment{
-		ErrorLogger: errorLogger,
-		InfoLogger:  infoLogger,
-		Config:      cfg,
+		ErrorLogger:  errorLogger,
+		InfoLogger:   infoLogger,
+		Config:       cfg,
+		ServersVoice: voice.NewServersVoiceActivity(),
 	}
 
 	// Tmp
-	Announcement, err = music_lib.LoadMusicFile("audio.dca")
+	Announcement, err = music_lib.LoadMusicFile("audio_welcome.dca")
 	if err != nil {
 		errorLogger.Fatalln("[ init ]", err)
 	}
@@ -47,7 +49,6 @@ func main() {
 	}
 
 	// Register the playUserSoundHandler func as a callback for MessageCreate events.
-	dg.AddHandler(playUserSoundHandler)
 	dg.AddHandler(voiceStateUpdateHandler)
 
 	// Open a websocket connection to Discord and begin listening.
