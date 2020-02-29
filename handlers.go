@@ -26,7 +26,6 @@ func voiceStateUpdateHandler(s *discordgo.Session, u *discordgo.VoiceStateUpdate
 	}
 
 	Env.ServersVoice.ServerLock(g.ID)
-
 	voiceConn, err := s.ChannelVoiceJoin(g.ID, c.ID, false, true)
 	if err != nil {
 		Env.ErrorLogger.Println("[ voiceStateUpdateHandler ]", "cannot determine guild", err)
@@ -38,6 +37,7 @@ func voiceStateUpdateHandler(s *discordgo.Session, u *discordgo.VoiceStateUpdate
 			Env.ErrorLogger.Println("[ voiceStateUpdateHandler ]", "error while disconnecting", err)
 			return
 		}
+		voiceConn.Close()
 	}()
 
 	time.Sleep(50 * time.Millisecond)
